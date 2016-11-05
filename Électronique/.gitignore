@@ -1,0 +1,19 @@
+# For PCBs designed using KiCad: http://www.kicad-pcb.org/
+
+#### Kicad
+*.bak
+*.bck
+*.raw
+*.log
+*.dcm
+*.kicad_pcb-bak
+*_autosave-*
+*cache*
+
+# Temporary files
+*~
+*.tmp
+
+# Exported BOM files
+*.xml
+*.csv
