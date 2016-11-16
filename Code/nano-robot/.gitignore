@@ -9,3 +9,5 @@ cmake_install.cmake
 *.a
 *.hex
 NanoRobot*
+
+libopencm3/libopencm3
