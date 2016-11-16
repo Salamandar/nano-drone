@@ -15,7 +15,8 @@ set     (NanoRobot_VERSION_MINOR 1)
 #   Source
 ####################################################################
 add_executable(${PROJECT_NAME}
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware.c
 )
 add_executable(main_binary ALIAS ${PROJECT_NAME})
 
@@ -33,11 +34,17 @@ add_custom_target(flash-nano-drone
     DEPENDS main_binary
     COMMAND arm-none-eabi-objcopy -Oihex $<TARGET_FILE:main_binary> $<TARGET_FILE:main_binary>.hex
     COMMAND echo "Flashing the Nano Drone !"
+    # COMMAND sudo openocd
+    #         -f stm32f0-openocd.cfg
+    #         -c \"reset_config none separate\"
+    #         -c \"init\"
+    #         -c \"reset init\"
+    #         -c \"stm_flash $<TARGET_FILE:main_binary>.hex\"
+    #         -c \"shutdown\"
     COMMAND sudo openocd
-            -f stm32f0-openocd.cfg
-            -c \"reset_config none separate\"
-            -c \"init\"
-            -c \"reset init\"
-            -c \"stm_flash $<TARGET_FILE:main_binary>.hex\"
-            -c \"shutdown\"
+            -f interface/stlink-v2-1.cfg -f target/stm32f0x.cfg
+            -c "init" -c "reset init"
+            -c "flash write_image erase NanoRobot.hex"
+            -c "reset"
+            -c "shutdown"
 )

@@ -78,6 +78,11 @@ add_custom_target(lib-stm32f0 WORKING_DIRECTORY ${TOOLCHAIN_PATH}
     COMMAND cp libopencm3/lib/libopencm3_stm32f0.a  .
     COMMAND cp libopencm3/lib/libopencm3_stm32f0.ld .
 )
+add_custom_target(lib-stm32f1 WORKING_DIRECTORY ${TOOLCHAIN_PATH}
+    COMMAND make -C libopencm3 lib/stm32/f1
+    COMMAND cp libopencm3/lib/libopencm3_stm32f1.a  .
+    COMMAND cp libopencm3/lib/libopencm3_stm32f1.ld .
+)
 add_custom_target(lib-stm32f3 WORKING_DIRECTORY ${TOOLCHAIN_PATH}
     COMMAND make -C libopencm3 lib/stm32/f3
     COMMAND cp libopencm3/lib/libopencm3_stm32f3.a  .
