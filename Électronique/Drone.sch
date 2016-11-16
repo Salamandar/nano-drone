@@ -385,7 +385,7 @@ XN297_MOSI
 Text GLabel 2950 5900 2    60   Input ~ 0
 XN297_SCK
 Text GLabel 2950 6050 2    60   Input ~ 0
-XN297_SCN
+XN297_CSN
 Text GLabel 2950 6200 2    60   Input ~ 0
 XN297_CE
 Text GLabel 4450 4200 0    60   Input ~ 0
@@ -393,7 +393,7 @@ XN297_MOSI
 Text GLabel 4450 4000 0    60   Input ~ 0
 XN297_SCK
 Text GLabel 9450 4500 2    60   Input ~ 0
-XN297_SCN
+XN297_CSN
 $Comp
 L GND #PWR15
 U 1 1 581D91C6
