@@ -13,7 +13,7 @@ int main() {
         gpio_toggle(LedBleuesPort, LedBleuesPin);
         gpio_toggle(LedRougesPort, LedRougesPin);
 
-        gpio_toggle(GPIOA, GPIO8 | GPIO9 | GPIO10 | GPIO11);
+        // gpio_toggle(GPIOA, GPIO8 | GPIO9 | GPIO10 | GPIO11);
 
     }
 
