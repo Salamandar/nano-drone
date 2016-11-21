@@ -7,6 +7,9 @@
 #include "timers.h"
 #include "semphr.h"
 
+volatile int delay = 0;
+volatile int sgn = 1;
+
 //TASKs : Toggle LED via RTOS Timer
 void ToggleLEDRouges_Timer(void *pvParameters){
     while (1) {
@@ -18,7 +21,15 @@ void ToggleLEDRouges_Timer(void *pvParameters){
 void ToggleLEDBleues_Timer(void *pvParameters){
     while (1) {
         toggle_leds_bleues();
-        vTaskDelay(75/portTICK_RATE_MS);
+        vTaskDelay(20-delay);
+        toggle_leds_bleues();
+        vTaskDelay(delay);
+        delay= (delay + sgn);
+        if(delay >= 20)
+            sgn = -1;
+        if(delay <= 0)
+            sgn = +1;
+
     }
 }
 
@@ -49,6 +60,14 @@ int main() {
         (void*) NULL,
         tskIDLE_PRIORITY + 2,
         NULL);
+
+    // xTaskCreate(
+    //     ToggleLEDBleues_Timer,
+    //     "Task2",
+    //     configMINIMAL_STACK_SIZE,
+    //     (void*) NULL,
+    //     tskIDLE_PRIORITY + 2,
+    //     NULL);
 
     // Start the RTOS Scheduler
     vTaskStartScheduler();
