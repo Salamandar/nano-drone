@@ -14,7 +14,25 @@ set     (NanoRobot_VERSION_MINOR 1)
 ####################################################################
 #   Source
 ####################################################################
+set(FreeRTOS_directory      "${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS")
+set(FreeRTOS_port_directory "${FreeRTOS_directory}/portable/GCC/ARM_CM0/")
+set(FreeRTOS_sources
+    ${FreeRTOS_directory}/croutine.c
+    ${FreeRTOS_directory}/event_groups.c
+    ${FreeRTOS_directory}/list.c
+    ${FreeRTOS_directory}/queue.c
+    ${FreeRTOS_directory}/tasks.c
+    ${FreeRTOS_directory}/timers.c
+    ${FreeRTOS_directory}/portable/MemMang/heap_3.c
+    ${FreeRTOS_port_directory}/port.c
+)
+include_directories(
+    ${FreeRTOS_directory}/include
+    ${FreeRTOS_port_directory}
+)
+
 add_executable(${PROJECT_NAME}
+    ${FreeRTOS_sources}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/hardware.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/leds.c
@@ -25,7 +43,7 @@ add_executable(${PROJECT_NAME}
 add_executable(main_binary ALIAS ${PROJECT_NAME})
 
 include_directories(
-    ${PROJECT_SOURCE_DIR}/
+    ${PROJECT_SOURCE_DIR}/src
 )
 
 
