@@ -16,7 +16,11 @@ set     (NanoRobot_VERSION_MINOR 1)
 ####################################################################
 add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/hardware.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/leds.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/motors.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/mpu.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/radio.c
 )
 add_executable(main_binary ALIAS ${PROJECT_NAME})
 
@@ -44,7 +48,7 @@ add_custom_target(flash-nano-drone
     COMMAND sudo openocd
             -f interface/stlink-v2-1.cfg -f target/stm32f0x.cfg
             -c "init" -c "reset init"
-            -c "flash write_image erase NanoRobot.hex"
+            -c "flash write_image erase NanoRobot"
             -c "reset"
             -c "shutdown"
 )
