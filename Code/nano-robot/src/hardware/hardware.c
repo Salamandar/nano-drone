@@ -15,12 +15,16 @@
 #include <libopencm3/cm3/systick.h>
 
 void init_hardware() {
-    // rcc_clock_setup_in_hsi_out_8mhz();
-    // rcc_clock_setup_in_hsi_out_16mhz();
-    // rcc_clock_setup_in_hsi_out_24mhz();
-    // rcc_clock_setup_in_hsi_out_32mhz();
-    // rcc_clock_setup_in_hsi_out_40mhz();
     rcc_clock_setup_in_hsi_out_48mhz();
+
+    // 48MHz => 48000000 counts per second.
+    systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
+    // Interrupts each millisec
+    systick_set_reload(48000 - 1);
+    // clear counter so it starts right away
+    systick_clear();
+    systick_counter_enable();
+    systick_interrupt_enable();
 
     rcc_periph_clock_enable(RCC_GPIOA);
     rcc_periph_clock_enable(RCC_GPIOB);
