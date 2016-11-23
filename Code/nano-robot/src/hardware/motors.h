@@ -1,5 +1,11 @@
 #pragma once
 
+#include <inttypes.h>
+
+#define PWM_PRESCALE        (1)
+#define PWM_PERIOD          (256)
+
+
 typedef enum _Motor {
     Mot_Avant_gauche = 0,
     Mot_Avant_droite = 1,
@@ -9,4 +15,5 @@ typedef enum _Motor {
 
 void init_motors();
 
-void motor_set_speed(Motor motor, float speed);
+// Speed between 0 and PWM_PERIOD
+void motor_set_speed(Motor motor, uint8_t speed);

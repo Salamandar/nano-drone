@@ -3,15 +3,9 @@
 #include "motors.h"
 #include "mpu.h"
 #include "radio.h"
+#include "video.h"
 
 #include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/usart.h>
-#include <libopencm3/stm32/timer.h>
-
-#include <libopencm3/stm32/flash.h>
-#include <libopencm3/stm32/exti.h>
-#include <libopencm3/cm3/nvic.h>
 #include <libopencm3/cm3/systick.h>
 
 void init_hardware() {
@@ -33,11 +27,17 @@ void init_hardware() {
     init_motors();
     init_mpu();
     init_radio();
+    init_video_pin();
 
 }
 
 
+// Should not be used with FreeRTOS !!
 void delay_nop(unsigned int count) {
     for (int i = 0; i < count; ++i)
+        __asm__("nop");
+}
+void delay_nop_ms(unsigned int ms) {
+    for (int i = 0; i < ms*RCC_CLOCK_FREQ_HZ; ++i)
         __asm__("nop");
 }

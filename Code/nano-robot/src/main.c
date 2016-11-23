@@ -1,40 +1,25 @@
 #include "hardware/hardware.h"
-#include "hardware/leds.h"
 #include "hardware/motors.h"
+#include "hardware/leds.h"
+#include "ledsTask.h"
+#include "videoTask.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "timers.h"
 #include "semphr.h"
 
-volatile int delay = 0;
-volatile int sgn = 1;
-
-//TASKs : Toggle LED via RTOS Timer
-void ToggleLEDRouges_Timer(void *pvParameters){
-    while (1) {
-        toggle_leds_rouges();
-        vTaskDelay(400/portTICK_RATE_MS);
-    }
-}
-//TASK 2: Toggle LED via RTOS Timer
-void ToggleLEDBleues_Timer(void *pvParameters){
-    while (1) {
-        toggle_leds_bleues();
-        vTaskDelay(20-delay);
-        toggle_leds_bleues();
-        vTaskDelay(delay);
-        delay= (delay + sgn);
-        if(delay >= 20)
-            sgn = -1;
-        if(delay <= 0)
-            sgn = +1;
-
-    }
-}
-
-
 xQueueHandle pbq;
+
+void test(void* test) {
+    while(1) {
+        vTaskDelay(100);
+    }
+}
+void test2(void* test) {
+    while(1) {
+        vTaskDelay(100);
+    }
+}
 
 int main() {
     init_hardware();
@@ -43,31 +28,28 @@ int main() {
     if (pbq == 0) {
         while(1); // fatal error
     }
+    // for (int motor = 0; motor < 4; ++motor) {
+    //     motor_set_speed(motor, 128);
+    // }
 
-    // Create tasks
+    init_leds_task();
+    init_video_task();
     xTaskCreate(
-        ToggleLEDRouges_Timer,      // Function pointer
-        "Task1",                    // Task name - for debugging only
-        configMINIMAL_STACK_SIZE,   // Stack depth in words
-        (void*) NULL,               // Pointer to tasks arguments (parameter)
-        tskIDLE_PRIORITY + 1,       // Task priority
-        NULL);                      // Task handle
-
-    xTaskCreate(
-        ToggleLEDBleues_Timer,
+        test,
         "Task2",
         configMINIMAL_STACK_SIZE,
         (void*) NULL,
         tskIDLE_PRIORITY + 2,
         NULL);
-
     // xTaskCreate(
-    //     ToggleLEDBleues_Timer,
+    //     test2,
     //     "Task2",
     //     configMINIMAL_STACK_SIZE,
     //     (void*) NULL,
     //     tskIDLE_PRIORITY + 2,
     //     NULL);
+
+    toggle_leds_rouges();
 
     // Start the RTOS Scheduler
     vTaskStartScheduler();

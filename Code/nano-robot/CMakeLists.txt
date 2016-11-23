@@ -33,11 +33,14 @@ include_directories(
 add_executable(${PROJECT_NAME}
     ${FreeRTOS_sources}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ledsTask.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/videoTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/hardware.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/leds.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/motors.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/mpu.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/radio.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/video.c
 )
 add_executable(main_binary ALIAS ${PROJECT_NAME})
 
@@ -45,11 +48,12 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src
 )
 
+add_definitions("-Os -g")
 
 target_link_libraries(${PROJECT_NAME}
     ${toolchain_libs}
 )
-
+set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,-Map=${PROJECT_BINARY_DIR}/output.map")
 
 add_custom_target(flash-nano-drone
     DEPENDS main_binary
@@ -62,10 +66,17 @@ add_custom_target(flash-nano-drone
     #         -c \"reset init\"
     #         -c \"stm_flash $<TARGET_FILE:main_binary>.hex\"
     #         -c \"shutdown\"
-    COMMAND sudo openocd
+    COMMAND openocd
             -f interface/stlink-v2-1.cfg -f target/stm32f0x.cfg
             -c "init" -c "reset init"
             -c "flash write_image erase NanoRobot"
             -c "reset"
             -c "shutdown"
+)
+
+add_custom_target(debug
+    DEPENDS main_binary
+    COMMAND echo \"Debugging the Nano Drone !\"
+    COMMAND ${CMAKE_SOURCE_DIR}/debug.sh
+
 )
