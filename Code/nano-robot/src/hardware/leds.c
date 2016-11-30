@@ -21,9 +21,6 @@ void toggle_leds_bleues() { gpio_toggle(LedsBleuesPort, LedsBleuesPin); }
 void    set_leds_bleues() { gpio_set   (LedsBleuesPort, LedsBleuesPin); }
 void  clear_leds_bleues() { gpio_clear (LedsBleuesPort, LedsBleuesPin); }
 
-void toggle_leds_rouges() {
-    __asm("BKPT");
-    gpio_toggle(LedsRougesPort, LedsRougesPin);
-}
+void toggle_leds_rouges() { gpio_toggle(LedsRougesPort, LedsRougesPin); }
 void    set_leds_rouges() { gpio_set   (LedsRougesPort, LedsRougesPin); }
 void  clear_leds_rouges() { gpio_clear (LedsRougesPort, LedsRougesPin); }

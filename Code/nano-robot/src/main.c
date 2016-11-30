@@ -23,6 +23,7 @@ void test2(void* test) {
 
 int main() {
     init_hardware();
+    nrf_test_receive();
 
     pbq = xQueueCreate(5, sizeof(int));
     if (pbq == 0) {

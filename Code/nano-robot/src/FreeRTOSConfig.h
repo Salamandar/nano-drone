@@ -55,4 +55,4 @@ header file. */
 // If you need to handle these yourself, comment these out and be sure to call them
 #define vPortSVCHandler         sv_call_handler
 #define xPortPendSVHandler      pend_sv_handler
-#define xPortSysTickHandler     sys_tick_handler
+// #define xPortSysTickHandler     sys_tick_handler
