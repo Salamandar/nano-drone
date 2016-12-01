@@ -73,7 +73,7 @@ void motor_set_speed(Motor motor, uint8_t speed) {
     if (speed < min_speed && speed != 0)
         speed = min_speed;
 
-    if (speed > min_speed)
+    if (speed > max_speed)
         speed = max_speed;
 
     switch(motor) {

@@ -132,9 +132,6 @@ void nrf_readPayload(int size, uint8_t *data) {
     nrf_deselect();
 }
 
-uint8_t buf[32];
-
-
 // XN297 specific
 const uint8_t bb_config[] = { 0x4c, 0x84, 0x6F, 0x9c, 0x20 };
 const uint8_t rf_config[] = { 0xc9, 0x9a, 0x80, 0x61, 0xbb, 0xab, 0x9c };
@@ -160,6 +157,7 @@ void nrf_initialize() {
     nrf_writeReg(STATUS,    0b01110000); // Clear status flags
     nrf_writeReg(EN_AA,     0b00000000); // No auto ack
     nrf_writeReg(SETUP_AW,  0b00000011); // Address size (5 bits)
+    nrf_setChann(                    2); // Initial channel
     nrf_writeReg(RF_CH,     0b00000010); // Write byte RF_channel
     nrf_writeReg(EN_RXADDR, 0b00000001); // Pipe 0 only
     nrf_writeReg(SETUP_RETR,0b00000000); // No retransmissions (redundant ?)
@@ -175,29 +173,67 @@ void nrf_initialize() {
         nrf_byte(0x73);
             nrf_read();
     nrf_deselect();
-    nrf_writeReg(DYNPD,     0b00000000);
-    nrf_writeReg(FEATURE,   0b00000000);
+
+    nrf_receive_data(15, 0);
+
+    // Write byte config (Power up, CRC 1B enabled, PRIM_RX)
+    nrf_writeReg(CONFIG,    0b00001111);
+
+
+
+
+    // XN297-specific initialization :
+    // * BB_CAL (baseband)
+    nrf_writeRegLong(BB_CAL,        5, bb_config);
+    // * RF_CAL
+    nrf_writeRegLong(RF_CAL,        7, rf_config);
+    // * DEMOD_CAL
+    nrf_writeRegLong(DEMOD_CAL,     5, dm_config);
+
+    // RX adress P0
+    nrf_writeRegLong(RX_ADDR_P0,    5, rxaddress);
+
+    nrf_command (FLUSH_RX);
+    nrf_command (FLUSH_TX);
+
+    nrf_writeReg(STATUS,    0b01110000); // Clear status flags
+    nrf_writeReg(EN_AA,     0b00000000); // No auto ack
+    nrf_writeReg(SETUP_AW,  0b00000011); // Address size (5 bits)
+    nrf_setChann(                    2); // Initial channel
+    nrf_writeReg(RF_CH,     0b00000010); // Write byte RF_channel
+    nrf_writeReg(EN_RXADDR, 0b00000001); // Pipe 0 only
+    nrf_writeReg(SETUP_RETR,0b00000000); // No retransmissions (redundant ?)
+    // nrf_writeReg(RF_SETUP,  0b00000001); // lna high current on (better performance)
+    nrf_writeReg(RF_SETUP,  0b00000111); // lna high current on (better performance)
+    nrf_writeReg(RX_PW_P0,        0x0F); // Payload size : 15 bytes
+
+
+    // XN297 : ACTIVATE + 0x73
+    nrf_select();
+        nrf_byte(ACTIVATE);
+            nrf_read();
+        nrf_byte(0x73);
+            nrf_read();
+    nrf_deselect();
+
 
     // Write byte config (Power up, CRC 1B enabled, PRIM_RX)
     nrf_writeReg(CONFIG,    0b00001111);
 }
 
+void nrf_setChann(int chan) {
+    nrf_writeReg(RF_CH, chan);
+}
 
+bool nrf_receive_data(int size_max, uint8_t *data_buffer) {
+    // TODO better detection ?
+    if (nrf_readReg(STATUS) != 0b00001110) {
+        nrf_readPayload(size_max, data_buffer);
 
-void nrf_test_receive() {
-    while(1) {
-        uint8_t status = nrf_readReg(STATUS);
-        // BP;
-        if (status != 0b00001110) {
-            set_leds_rouges();
-            nrf_readPayload(31, buf);
-            // BP;
-                                    //01000000
-            nrf_writeReg(STATUS,    0b01000000);
-        } else {
-            clear_leds_rouges();
-        }
-        toggle_leds_bleues();
-        delay_nop(80000);
-    }
+        // TODO check if other flag resets needed
+        // Reset status flags
+        nrf_writeReg(STATUS,    0b01000000);
+        return true;
+    } else
+        return false;
 }
