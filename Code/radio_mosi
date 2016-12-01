@@ -36,17 +36,15 @@ A0  AA
 0x27 0x70
 0xe1 0x00
 0xa0 0x55 0x3a 0x88 0x89 0x8a 0xdc 0x05 0xdc 0x05 0xe8 0x03 0xdc 0x05 0x00 0x00
-     0xaa 0x3a 0x88 0x89 0x8a 0xdc  0x5 0xdc  0x5 0xe8  0x3 0xdc  0x5  0x0  0x0 0x0 0x11 0xa8 0x24 0x11 0x1 0x2
-  0x31 0x41 0x2 0x90 0xa0 0x1 0x1d 0x40 0x8 0x0
 // FORMAT :
-//                   Côté  av/ar Gaz   Rotat
-// A0 55 3A 88 89 8A cc cc aa 0a gg 0g rr Xr XX X0
-// 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16
-// byte 14 : 1000 .... pour le flip
-// byte 15 : .1.. .... (press repeat) calibration B (btn2)
-// byte 15 : ..1. .... (press repeat) calibration F (btn1)
-// byte 15 : ...1 .... (press repeat) calibration L (btn3)
-// byte 15 : .... 1... (press repeat) calibration R (btn4)
-// byte 15 : .... ..xx : difficulté (0, 1, 2)
-// byte 16 : .100 0000 (toggle button) photo
-// byte 16 : 1.00 0000 (toggle button) video
+//                Côté  av/ar Gaz   Rotat
+// 55 3A 88 89 8A cc cc aa 0a gg 0g rr Xr XX X0
+// 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16
+// byte 12 : 1000 .... pour le flip
+// byte 13 : .1.. .... (press repeat) calibration B (btn2)
+// byte 13 : ..1. .... (press repeat) calibration F (btn1)
+// byte 13 : ...1 .... (press repeat) calibration L (btn3)
+// byte 13 : .... 1... (press repeat) calibration R (btn4)
+// byte 13 : .... ..xx : difficulté (0, 1, 2)
+// byte 14 : .100 0000 (toggle button) photo
+// byte 14 : 1.00 0000 (toggle button) video

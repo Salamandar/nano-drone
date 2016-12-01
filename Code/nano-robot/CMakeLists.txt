@@ -34,6 +34,7 @@ add_executable(${PROJECT_NAME}
     ${FreeRTOS_sources}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ledsTask.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/radioTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/videoTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/hardware.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/leds.c

@@ -23,7 +23,9 @@ void test2(void* test) {
 
 int main() {
     init_hardware();
-    nrf_test_receive();
+    while (1)
+        receive_radio();
+
 
     pbq = xQueueCreate(5, sizeof(int));
     if (pbq == 0) {
