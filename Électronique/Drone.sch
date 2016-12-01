@@ -31,7 +31,6 @@ LIBS:valves
 LIBS:stm32
 LIBS:sensors
 LIBS:Panchip
-LIBS:Drone-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -331,9 +330,6 @@ F 3 "" H 1550 6200 50  0000 C CNN
 	1    1550 6200
 	0    -1   -1   0   
 $EndComp
-NoConn ~ 2550 5100
-Text Notes 2550 5200 0    60   ~ 0
-PA12 ?
 $Comp
 L C C3
 U 1 1 581D7CDB
@@ -446,8 +442,6 @@ F 3 "" H 7050 2600 50  0000 C CNN
 	1    7050 2600
 	1    0    0    -1  
 $EndComp
-Text Notes 9950 4200 0    60   ~ 0
-?
 $Comp
 L L_Small L1
 U 1 1 581DE7AE
@@ -483,8 +477,6 @@ F 3 "" H 1100 6350 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	1100 5750 1550 5750
-Wire Wire Line
-	9450 4200 9950 4200
 Connection ~ 6950 2600
 Wire Wire Line
 	6850 2600 7050 2600
@@ -548,4 +540,8 @@ Wire Notes Line
 	750  2200 750  4050
 Wire Notes Line
 	750  4050 3400 4050
+Text GLabel 9450 4200 2    60   Input ~ 0
+XN297_IRQ
+Text GLabel 2550 5200 2    60   Input ~ 0
+XN297_IRQ
 $EndSCHEMATC
