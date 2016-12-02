@@ -2,6 +2,7 @@
 #include "hardware/motors.h"
 #include "hardware/leds.h"
 #include "ledsTask.h"
+#include "radioTask.h"
 #include "videoTask.h"
 
 #include "FreeRTOS.h"
@@ -23,8 +24,10 @@ void test2(void* test) {
 
 int main() {
     init_hardware();
-    while (1)
+    while (1) {
         receive_radio();
+        mpu_get_inertial_values();
+    }
 
 
     pbq = xQueueCreate(5, sizeof(int));

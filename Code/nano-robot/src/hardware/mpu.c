@@ -1,73 +1,111 @@
+#include "hardware.h"
 #include "mpu.h"
+#include "mpu_MPU-6052C.h"
+
+#include "leds.h"
+#include "motors.h"
+
+#include "HAL/main_i2c.h"
 
 #include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/i2c.h>
 
-#define I2C1_SDA_PORT   GPIOB
-#define I2C1_SDA_PIN    GPIO7
+#define I2C_MPU_ADDR    0xd0
 
-#define I2C1_SCL_PORT   GPIOB
-#define I2C1_SCL_PIN    GPIO6
+uint8_t to_send[1];
+uint8_t receive[1];
+
+inline
+void MPU_write_register(uint16_t MemAddress, uint8_t data) {
+    to_send[0] = data;
+    i2c_HAL_write_register(I2C_MPU_ADDR, MemAddress, to_send, 1);
+}
 
 void init_mpu() {
-    // rcc_periph_clock_enable(RCC_I2C1);
-    // //rcc_set_i2c_clock_hsi(I2C1);
+    // TODO interrupt on gpio useful ?
+    gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO0);
 
-    // i2c_reset(I2C1);
-    // // Setup GPIO pin GPIO_USART2_TX/GPIO9 on GPIO port A for transmit.
-    // gpio_mode_setup(
-    //     GPIOB,
-    //     GPIO_MODE_AF, GPIO_PUPD_NONE,
-    //     GPIO6 | GPIO7);
-    // gpio_set_af(
-    //     GPIOB,
-    //     GPIO_AF4,
-    //     GPIO6 | GPIO7);
+    // TODO clean HAL and debug libopencm3
+    init_i2c_HAL();
+    delay_ms(1);
 
-    // i2c_peripheral_disable  (I2C1);
-    // //i2c_set_digital_filter  (I2C1, I2C_CR1_DNF_DISABLED);
-    // // Configure PRESC[3:0] SDADEL[3:0] SCLDEL[3:0] SCLH[7:0] SCLL[7:0]
-    // // in TIMINGR
-    // i2c_100khz_i2cclk8mhz   (I2C1);
-    // // configure No-Stretch CR1 (only relevant in slave mode)
-    // i2c_enable_stretching   (I2C1);
-    // // addressing mode
-    // i2c_set_7bit_addr_mode  (I2C1);
-    // i2c_peripheral_enable   (I2C1);
+    // Gyro soft-reset
+    MPU_write_register(107,  128);
+    delay_ms(40);
+    // …Then back to life !
+    MPU_write_register(107,  0);
+
+    // Gyro FS (FullScale) range 3 (±2000°/s)
+    MPU_write_register(27, 24);
+    // Gyro+Accelero DLPF (Digital Low Pass Filter)
+    MPU_write_register(26,      GYRO_LOW_PASS_42Hz);
+}
+
+void mpu_who_are_you() {
+    i2c_HAL_read(WHO_AM_I, receive, 1);
+    int id = receive[0];
+    // Well_known values : 0x78, 0x68, 0x7D
+}
+
+
+
+
+int16_t gyro_x;
+int16_t gyro_y;
+int16_t gyro_z;
+
+int16_t gyro_cal_x;
+int16_t gyro_cal_y;
+int16_t gyro_cal_z;
+
+
+float accel[3];
+
+#define COS45 1.41421356237/2
+
+
+void mpu_get_inertial_values() {
+    uint8_t data[6];
+
+    // ? We can get multiple registers at once
+    i2c_HAL_read_register(I2C_MPU_ADDR, ACCEL_XOUT_H, data, 6);
+
+    gyro_x = (( ((int16_t) data[0]) << 8) | data[1]) - gyro_cal_x;
+    gyro_y = (( ((int16_t) data[2]) << 8) | data[3]) - gyro_cal_y;
+    gyro_z = (( ((int16_t) data[4]) << 8) | data[5]) - gyro_cal_z;
+
+    toggle_leds_bleues();
+
+    int16_t axis02 = COS45*(gyro_x+gyro_y);
+    int16_t axis13 = COS45*(gyro_x-gyro_y);
+
+    if (axis02 > 0) {
+        motor_set_speed(2,  axis02/10);
+        motor_set_speed(0, 0);
+    }
+    else {
+        motor_set_speed(0, -axis02/10);
+        motor_set_speed(2, 0);
+    }
+
+    if (axis13 > 0) {
+        motor_set_speed(3,  axis13/10);
+        motor_set_speed(1, 0);
+    }
+    else {
+        motor_set_speed(1, -axis13/10);
+        motor_set_speed(3, 0);
+    }
+
+
+    // BP;
+
 
 }
 
-// #define I2C_ACC_ADDR 0x19
-// #define I2C_MAG_ADDR 0x1E
-// #define ACC_STATUS 0x27
-// #define ACC_CTRL_REG1_A 0x20
-// #define ACC_CTRL_REG1_A_ODR_SHIFT 4
-// #define ACC_CTRL_REG1_A_ODR_MASK 0xF
-// #define ACC_CTRL_REG1_A_XEN (1 << 0)
-// #define ACC_CTRL_REG4_A 0x23
 
-// #define ACC_OUT_X_L_A 0x28
-// #define ACC_OUT_X_H_A 0x29
+// This function should be called until it returns true.
+bool mpu_calibrate() {
 
-//     write_i2c(I2C1, I2C_ACC_ADDR, ACC_CTRL_REG1_A, 1, data);
-//     data[0]=0x08;
-//     write_i2c(I2C1, I2C_ACC_ADDR, ACC_CTRL_REG4_A, 1, data);
-//     uint16_t acc_x;
 
-//     while (1) {
 
-//         read_i2c(I2C1, I2C_ACC_ADDR, ACC_STATUS, 1, data);
-//         /*my_usart_print_int(USART2, data[0]);*/
-//         read_i2c(I2C1, I2C_ACC_ADDR, ACC_OUT_X_L_A, 1, data);
-//         acc_x=data[0];
-//         read_i2c(I2C1, I2C_ACC_ADDR, ACC_OUT_X_H_A, 1, data);
-//         acc_x|=(data[0] << 8);
-//         my_usart_print_int(USART2, (int16_t) acc_x);
-//         //int i;
-//         //for (i = 0; i < 800000; i++)    /* Wait a bit. */
-//         //  __asm__("nop");
-//     }
-
-//     return 0;
-// }
+}

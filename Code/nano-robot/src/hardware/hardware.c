@@ -25,7 +25,7 @@ void init_hardware() {
 
     init_leds();
     init_motors();
-    // init_mpu();
+    init_mpu();
     init_radio();
     init_video_pin();
 
@@ -46,7 +46,7 @@ void delay_nop(unsigned int count) {
         __asm__("nop");
 }
 
-void delay_nop_ms(unsigned int ms) {
+void delay_ms(unsigned int ms) {
     int count_max = systick_count + ms;
     while(systick_count < count_max) {}
 }

@@ -7,5 +7,5 @@
 
 void init_hardware();
 void delay_nop(unsigned int count);
-void delay_nop_ms(unsigned int ms);
+void delay_ms(unsigned int ms);
 
