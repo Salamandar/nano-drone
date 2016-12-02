@@ -42,35 +42,50 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/mpu.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/radio.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/video.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/main_i2c.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_msp.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_gpio.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_i2c.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_i2c_ex.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_rcc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_rcc_ex.c
 )
 add_executable(main_binary ALIAS ${PROJECT_NAME})
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/src
 )
+## ST HAL
+add_definitions("-DSTM32F031x6")
 
 add_definitions("-Os -g")
 
 target_link_libraries(${PROJECT_NAME}
     ${toolchain_libs}
 )
-set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,-Map=${PROJECT_BINARY_DIR}/output.map")
+# set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,-Map=${PROJECT_BINARY_DIR}/output.map")
 
 add_custom_target(flash-nano-drone
     DEPENDS main_binary
     COMMAND arm-none-eabi-objcopy -Oihex $<TARGET_FILE:main_binary> $<TARGET_FILE:main_binary>.hex
     COMMAND echo "Flashing the Nano Drone !"
-    # COMMAND sudo openocd
-    #         -f stm32f0-openocd.cfg
-    #         -c \"reset_config none separate\"
-    #         -c \"init\"
-    #         -c \"reset init\"
-    #         -c \"stm_flash $<TARGET_FILE:main_binary>.hex\"
-    #         -c \"shutdown\"
     COMMAND openocd
             -f interface/stlink-v2-1.cfg -f target/stm32f0x.cfg
             -c "init" -c "reset init"
             -c "flash write_image erase NanoRobot"
+            -c "reset"
+            -c "shutdown"
+)
+
+add_custom_target(flash-cubemx-nano-drone
+    DEPENDS main_binary
+    COMMAND arm-none-eabi-objcopy -Oihex $<TARGET_FILE:main_binary> $<TARGET_FILE:main_binary>.hex
+    COMMAND echo "Flashing the Nano Drone !"
+    COMMAND openocd
+            -f interface/stlink-v2-1.cfg -f target/stm32f0x.cfg
+            -c "init" -c "reset init"
+            -c "flash write_image erase /home/felix/workspace/nano-i2c/Debug/nano-i2c.elf"
             -c "reset"
             -c "shutdown"
 )
