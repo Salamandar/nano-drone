@@ -4,6 +4,7 @@
 #include "hardware/hardware.h"
 #include "hardware/radio.h"
 #include "hardware/leds.h"
+#include "hardware/motors.h"
 
 // Useful ?
 enum ReceptionState{
