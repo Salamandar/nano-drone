@@ -47,7 +47,13 @@ void mpu_who_are_you() {
 }
 
 
+int16_t accel_x;
+int16_t accel_y;
+int16_t accel_z;
 
+int16_t accel_cal_x;
+int16_t accel_cal_y;
+int16_t accel_cal_z;
 
 int16_t gyro_x;
 int16_t gyro_y;
@@ -58,25 +64,30 @@ int16_t gyro_cal_y;
 int16_t gyro_cal_z;
 
 
-float accel[3];
-
 #define COS45 1.41421356237/2
 
 
 void mpu_get_inertial_values() {
     uint8_t data[6];
 
-    // ? We can get multiple registers at once
+    // We can get multiple registers at once
     i2c_HAL_read_register(I2C_MPU_ADDR, ACCEL_XOUT_H, data, 6);
 
-    gyro_x = (( ((int16_t) data[0]) << 8) | data[1]) - gyro_cal_x;
-    gyro_y = (( ((int16_t) data[2]) << 8) | data[3]) - gyro_cal_y;
-    gyro_z = (( ((int16_t) data[4]) << 8) | data[5]) - gyro_cal_z;
+    accel_x = (( ((int16_t) data[0]) << 8) | data[1]) - accel_cal_x;
+    accel_y = (( ((int16_t) data[2]) << 8) | data[3]) - accel_cal_y;
+    accel_z = (( ((int16_t) data[4]) << 8) | data[5]) - accel_cal_z;
 
-    toggle_leds_bleues();
 
-    int16_t axis02 = COS45*(gyro_x+gyro_y);
-    int16_t axis13 = COS45*(gyro_x-gyro_y);
+    // We can get multiple registers at once
+    i2c_HAL_read_register(I2C_MPU_ADDR,  GYRO_XOUT_H, data, 6);
+
+    gyro_x  = (( ((int16_t) data[0]) << 8) | data[1]) - gyro_cal_x;
+    gyro_y  = (( ((int16_t) data[2]) << 8) | data[3]) - gyro_cal_y;
+    gyro_z  = (( ((int16_t) data[4]) << 8) | data[5]) - gyro_cal_z;
+
+
+    int16_t axis02 = COS45*(accel_x+accel_y);
+    int16_t axis13 = COS45*(accel_x-accel_y);
 
     if (axis02 > 0) {
         motor_set_speed(2,  axis02/10);
@@ -95,11 +106,6 @@ void mpu_get_inertial_values() {
         motor_set_speed(1, -axis13/10);
         motor_set_speed(3, 0);
     }
-
-
-    // BP;
-
-
 }
 
 
