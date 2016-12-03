@@ -37,6 +37,7 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/radioTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/videoTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/hardware.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/eeprom.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/leds.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/motors.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/mpu.c

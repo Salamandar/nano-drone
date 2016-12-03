@@ -1,6 +1,8 @@
 #include "hardware/hardware.h"
-#include "hardware/motors.h"
+#include "hardware/eeprom.h"
 #include "hardware/leds.h"
+#include "hardware/motors.h"
+#include "hardware/mpu.h"
 #include "ledsTask.h"
 #include "radioTask.h"
 #include "videoTask.h"
@@ -24,6 +26,7 @@ void test2(void* test) {
 
 int main() {
     init_hardware();
+    eeprom_test();
     while (1) {
         receive_radio();
         mpu_get_inertial_values();
