@@ -5,6 +5,7 @@
 #include "hardware/mpu.h"
 #include "ledsTask.h"
 #include "radioTask.h"
+#include "sixAxisTask.h"
 #include "videoTask.h"
 
 #include "FreeRTOS.h"
@@ -29,7 +30,7 @@ int main() {
     // eeprom_test();
     while (1) {
         receive_radio();
-        mpu_get_inertial_values();
+        mpuTask();
     }
 
 
