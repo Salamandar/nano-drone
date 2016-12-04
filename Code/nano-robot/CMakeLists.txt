@@ -63,12 +63,18 @@ target_link_libraries(${PROJECT_NAME}
 
 add_custom_target(flash-nano-drone
     DEPENDS main_binary
-    COMMAND arm-none-eabi-objcopy -Oihex $<TARGET_FILE:main_binary> $<TARGET_FILE:main_binary>.hex
     COMMAND echo "Flashing the Nano Drone !"
+    COMMAND arm-none-eabi-size $<TARGET_FILE:main_binary>
     COMMAND openocd
-            -f interface/stlink-v2-1.cfg -f target/stm32f0x.cfg
+            -f interface/stlink-v2-1.cfg
+            -f target/stm32f0x.cfg
             -c "init" -c "reset init"
-            -c "flash write_image erase NanoRobot"
+            -c "flash write_image erase $<TARGET_FILE:main_binary>"
             -c "reset"
             -c "shutdown"
 )
+
+add_custom_target(print-size
+    DEPENDS main_binary
+    COMMAND arm-none-eabi-size $<TARGET_FILE:main_binary>
+    )
