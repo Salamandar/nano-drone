@@ -66,28 +66,12 @@ void init_motors(void) {
     timer_enable_oc_output  (TIM1, TIM_OC4);
 }
 
-#define max_speed 255
-#define min_speed 10
 // TODO arranger switch
-void motor_set_speed(Motor motor, uint8_t speed) {
-    if (speed < min_speed && speed != 0)
-        speed = min_speed;
+void motor_set_speed(Motor motor, uint32_t speed) {
+    speed = speed <=        0 ?         0
+          : speed > motor_max ? motor_max
+          : speed < motor_min ? motor_min
+          : speed ;
 
-    if (speed > max_speed)
-        speed = max_speed;
-
-    switch(motor) {
-        case Mot_Avant_gauche:
-            timer_set_oc_value(TIM1, TIM_OC1, speed);
-            break;
-        case Mot_Avant_droite:
-            timer_set_oc_value(TIM1, TIM_OC2, speed);
-            break;
-        case Mot_Arrie_gauche:
-            timer_set_oc_value(TIM1, TIM_OC3, speed);
-            break;
-        case Mot_Arrie_droite:
-            timer_set_oc_value(TIM1, TIM_OC4, speed);
-            break;
-    }
+    timer_set_oc_value(TIM1, motor, speed);
 }

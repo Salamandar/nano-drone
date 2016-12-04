@@ -1,7 +1,6 @@
 #include "hardware.h"
 #include "radio.h"
 #include "radio_xn297.h"
-#include "leds.h"
 
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
@@ -138,6 +137,8 @@ const uint8_t rf_config[] = { 0xc9, 0x9a, 0x80, 0x61, 0xbb, 0xab, 0x9c };
 const uint8_t dm_config[] = { 0x0b, 0xdf, 0xc4, 0xa7, 0x03 };
 
 const uint8_t rxaddress[] = { 0xCC, 0xCC, 0xCC, 0xCC, 0xCC };
+
+// Dafuk, i need to initialize twice ?
 
 void nrf_initialize() {
     // XN297-specific initialization :

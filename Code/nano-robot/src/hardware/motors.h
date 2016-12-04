@@ -3,17 +3,21 @@
 #include <inttypes.h>
 
 #define PWM_PRESCALE        (1)
-#define PWM_PERIOD          (256)
+#define PWM_PERIOD          (1024)
 
+#include <libopencm3/stm32/timer.h>
 
 typedef enum _Motor {
-    Mot_Avant_gauche = 0,
-    Mot_Avant_droite = 1,
-    Mot_Arrie_gauche = 2,
-    Mot_Arrie_droite = 3,
+    Mot_Arrie_droite = TIM_OC1,
+    Mot_Avant_droite = TIM_OC2,
+    Mot_Avant_gauche = TIM_OC3,
+    Mot_Arrie_gauche = TIM_OC4,
 } Motor;
 
 void init_motors();
 
 // Speed between 0 and PWM_PERIOD
-void motor_set_speed(Motor motor, uint8_t speed);
+#define motor_max PWM_PERIOD - 1
+#define motor_min 10
+
+void motor_set_speed(Motor motor, uint32_t speed);

@@ -22,24 +22,23 @@ uint32_t flash_write_data(uint32_t start_address, uint32_t *input_data, uint16_t
     // calculate the page address
     uint32_t page_address = start_address - (start_address % FLASH_PAGE_SIZE);
 
+    // Status flags
     volatile uint32_t flash_status = 0;
 
-
+    // Ask the STM32 to unlock the flash for write
     flash_unlock();
 
     // Erasing the page is needed
     flash_erase_page(page_address);
 
-    flash_status = flash_get_status_flags();
-    if(flash_status != FLASH_SR_EOP)
+    if((flash_status = flash_get_status_flags()) != FLASH_SR_EOP)
         return flash_status;
 
     // programming flash memory
     for (int i = 0; i < num_elements; ++i) {
         flash_program_word(start_address + i*4, *((uint32_t*)input_data + i));
 
-        flash_status = flash_get_status_flags();
-        if (flash_status != FLASH_SR_EOP)
+        if((flash_status = flash_get_status_flags()) != FLASH_SR_EOP)
             return flash_status;
 
 #       ifdef DEBUG_EEPROM

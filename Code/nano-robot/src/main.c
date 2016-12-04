@@ -26,7 +26,7 @@ void test2(void* test) {
 
 int main() {
     init_hardware();
-    eeprom_test();
+    // eeprom_test();
     while (1) {
         receive_radio();
         mpu_get_inertial_values();
