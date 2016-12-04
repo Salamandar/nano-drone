@@ -44,13 +44,7 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/radio.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/video.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/main_i2c.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_msp.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_gpio.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_i2c.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_i2c_ex.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_rcc.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_rcc_ex.c
 )
 add_executable(main_binary ALIAS ${PROJECT_NAME})
 
@@ -77,23 +71,4 @@ add_custom_target(flash-nano-drone
             -c "flash write_image erase NanoRobot"
             -c "reset"
             -c "shutdown"
-)
-
-add_custom_target(flash-cubemx-nano-drone
-    DEPENDS main_binary
-    COMMAND arm-none-eabi-objcopy -Oihex $<TARGET_FILE:main_binary> $<TARGET_FILE:main_binary>.hex
-    COMMAND echo "Flashing the Nano Drone !"
-    COMMAND openocd
-            -f interface/stlink-v2-1.cfg -f target/stm32f0x.cfg
-            -c "init" -c "reset init"
-            -c "flash write_image erase /home/felix/workspace/nano-i2c/Debug/nano-i2c.elf"
-            -c "reset"
-            -c "shutdown"
-)
-
-add_custom_target(debug
-    DEPENDS main_binary
-    COMMAND echo \"Debugging the Nano Drone !\"
-    COMMAND ${CMAKE_SOURCE_DIR}/debug.sh
-
 )
