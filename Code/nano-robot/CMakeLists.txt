@@ -31,12 +31,14 @@ include_directories(
 )
 
 add_executable(${PROJECT_NAME}
-    ${FreeRTOS_sources}
+    # ${FreeRTOS_sources}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ledsTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/radioTask.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/sixAxisTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/videoTask.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/asservissement.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/filters.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pid.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/hardware.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/eeprom.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/leds.c
@@ -52,8 +54,6 @@ add_executable(main_binary ALIAS ${PROJECT_NAME})
 include_directories(
     ${PROJECT_SOURCE_DIR}/src
 )
-## ST HAL
-add_definitions("-DSTM32F031x6")
 
 add_definitions("-Os -g")
 
@@ -78,4 +78,4 @@ add_custom_target(flash-nano-drone
 add_custom_target(print-size
     DEPENDS main_binary
     COMMAND arm-none-eabi-size $<TARGET_FILE:main_binary>
-    )
+)
