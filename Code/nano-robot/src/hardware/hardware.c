@@ -40,6 +40,10 @@ void sys_tick_handler() {
     // xPortSysTickHandler();
 }
 
+int get_systick() {
+    return systick_count;
+}
+
 
 // Should not be used with FreeRTOS !!
 void delay_nop(unsigned int count) {

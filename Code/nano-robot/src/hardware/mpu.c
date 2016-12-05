@@ -62,8 +62,10 @@ void init_mpu() {
     // …Then back to life !
     MPU_write_register(PWR_MGMT_1,  0b00000000);
 
-    // Gyro FS (FullScale) range 3 (±2000°/s)
+    // Gyro  FS (FullScale) range 3 (±2000°/s)
     MPU_write_register(GYRO_CONFIG, 0b00011000);
+    // Accel FS (FullScale) range 1 (±4g)
+    MPU_write_register(ACCEL_CONFIG,0b00001000);
     // Gyro+Accelero DLPF (Digital Low Pass Filter)
     MPU_write_register(CONFIG,      GYRO_LOW_PASS_42Hz);
 

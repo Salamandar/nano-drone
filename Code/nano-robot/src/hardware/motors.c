@@ -67,7 +67,7 @@ void init_motors(void) {
 }
 
 // TODO arranger switch
-void motor_set_speed(Motor motor, uint32_t speed) {
+void motor_set_speed(Motor motor, int32_t speed) {
     speed = speed <=        0 ?         0
           : speed > motor_max ? motor_max
           : speed < motor_min ? motor_min

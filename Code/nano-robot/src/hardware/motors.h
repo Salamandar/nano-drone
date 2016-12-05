@@ -18,6 +18,6 @@ void init_motors();
 
 // Speed between 0 and PWM_PERIOD
 #define motor_max PWM_PERIOD - 1
-#define motor_min 10
+#define motor_min 50
 
-void motor_set_speed(Motor motor, uint32_t speed);
+void motor_set_speed(Motor motor, int32_t speed);
