@@ -1,42 +1,43 @@
-#include <stdbool.h>
-#include <stdint.h>
+#include "radioTask.h"
 
 #include "hardware/hardware.h"
 #include "hardware/radio.h"
 #include "hardware/leds.h"
 #include "hardware/motors.h"
 
-// Useful ?
-enum ReceptionState{
-    None,               // Initial
-    FirstHandShake,     // Channel 2  detected! Should change channel soon.
-    FirstHandShakeLost, // Channel 2  lost!     Should change channel now.
-    Main,               // Channel 25 detected!
-    MainLost,           // Channel 25 lost !
+RadioConfig radioConfig = {
+    .flip           = 0,
+    .calibration_B  = 0,
+    .calibration_F  = 0,
+    .calibration_L  = 0,
+    .calibration_R  = 0,
+    .difficulty     = 1,
+    .photo          = 0,
+    .video          = 0,
 
-} receptionState = None;
+    .radioState = None,
+    .radioSignal_lostSince = 0,
+};
 
 uint8_t buf[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
-int mainSignal_lostSince = 0;
 
 void receive_radio() {
     if (nrf_receive_data(15, buf)) {
         // Signal found !
-        switch(receptionState) {
+        switch(radioConfig.radioState) {
         case None:
-            receptionState = FirstHandShake;
+            radioConfig.radioState = FirstHandShake;
             // set leds frequency first handshake
             set_leds_rouges();
             break;
 
         case FirstHandShakeLost:
         case MainLost:
-            receptionState = Main;
+            radioConfig.radioState = Main;
             // set leds frequency main
             set_leds_bleues();
             // Reset loss counter
-            mainSignal_lostSince = 0;
+            radioConfig.radioSignal_lostSince = 0;
             break;
 
         default:
@@ -44,9 +45,10 @@ void receive_radio() {
         }
     } else {
         // Signal lost !
-        switch(receptionState) {
+        switch(radioConfig.radioState) {
+        case None: // This is just for debug
         case FirstHandShake:
-            receptionState = FirstHandShakeLost;
+            radioConfig.radioState = FirstHandShakeLost;
             // Change channel now
             nrf_setChann(25);
             // set leds frequency first handshake lost
@@ -55,7 +57,7 @@ void receive_radio() {
             break;
 
         case Main:
-            receptionState = MainLost;
+            radioConfig.radioState = MainLost;
             // set leds frequency main lost
             clear_leds_bleues();
             break;
@@ -66,14 +68,14 @@ void receive_radio() {
     }
     delay_nop(80000);
 
-    switch(receptionState) {
+    switch(radioConfig.radioState) {
     case None:
     case FirstHandShake:
     case FirstHandShakeLost:
         return; // No main signal here
 
     case MainLost:
-        mainSignal_lostSince++;
+        radioConfig.radioSignal_lostSince++;
         return; // TODO manage signal loss
 
     case Main:
@@ -81,63 +83,40 @@ void receive_radio() {
     }
 
 
-
     // Decode received data
 
     // Received : min 1000, max 2000
-    int16_t cote = buf[ 5] + ((buf[ 6] & 0x0F) << 8) - 1000;
-    int16_t avar = buf[ 7] + ((buf[ 8] & 0x0F) << 8) - 1000;
-    int16_t gaz  = buf[ 9] + ((buf[10] & 0x0F) << 8) - 1000;
-    int16_t rot  = buf[11] + ((buf[12] & 0x0F) << 8) - 1000;
+    radioConfig.cote = buf[ 5] + ((buf[ 6] & 0x0F) << 8) - 1000;
+    radioConfig.avar = buf[ 7] + ((buf[ 8] & 0x0F) << 8) - 1000;
+    radioConfig.gaz  = buf[ 9] + ((buf[10] & 0x0F) << 8) - 1000;
+    radioConfig.rot  = buf[11] + ((buf[12] & 0x0F) << 8) - 1000;
 
-    bool flip           = (buf[12] >> 4) & 0x01;
-    bool calibration_B  = (buf[13] >> 6) & 0x01;
-    bool calibration_F  = (buf[13] >> 5) & 0x01;
-    bool calibration_L  = (buf[13] >> 4) & 0x01;
-    bool calibration_R  = (buf[13] >> 3) & 0x01;
-    int  difficulty     = (buf[13])      & 0x03;
-    bool photo          = (buf[14] >> 6) & 0x01;
-    bool video          = (buf[14] >> 7) & 0x01;
+    // The static are needed to detect rising/falling edges
+    // to convert "toggle buttons" to "push buttons"
+    // buf_xx_ represents the changes in the buf[xx] data
+    static uint8_t buf13 = 0;
+    uint8_t buf_13_ = buf13^buf[13];
+    buf13 = buf[13];
 
+    static uint8_t buf14 = 0;
+    uint8_t buf_14_ = buf14^buf[14];
+    buf14 = buf[14];
 
+    radioConfig.flip           = (buf[12] >> 4) & 0x01;
+    radioConfig.calibration_B  = (buf_13_ >> 6) & 0x01;
+    radioConfig.calibration_F  = (buf_13_ >> 5) & 0x01;
+    radioConfig.calibration_L  = (buf_13_ >> 4) & 0x01;
+    radioConfig.calibration_R  = (buf_13_ >> 3) & 0x01;
+    radioConfig.difficulty     = (buf[13] >> 0) & 0x03;
+    radioConfig.photo          = (buf_14_ >> 6) & 0x01;
+    radioConfig.video          = (buf_14_ >> 7) & 0x01;
 
     // Test values
     clear_leds_bleues();
     clear_leds_rouges();
 
-    switch (difficulty) {
-    case 0:
+    if (radioConfig.video) {
         set_leds_rouges();
-        break;
-    case 1:
-        set_leds_bleues();
-        break;
-    case 2:
-        set_leds_rouges();
-        set_leds_bleues();
-        break;
-    case 3:
-        break;
     }
-
-
-    // if (video) {
-    //     set_leds_rouges();
-    // } else {
-    //     clear_leds_rouges();
-    // }
-
-    // motor_set_speed(0, (500 - cote)/2);
-    // motor_set_speed(1, (500 - avar)/2);
-    // motor_set_speed(2, (rot - 500)/2);
-
-    motor_set_speed(0, gaz/4);
-    motor_set_speed(1, gaz/4);
-    motor_set_speed(2, gaz/4);
-    motor_set_speed(3, gaz/4);
-
-    // toggle_leds_bleues();
-
-
 
 }
