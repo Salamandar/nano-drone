@@ -46,6 +46,7 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/mpu.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/radio.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/video.c
+    # ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/i2c_libopencm3.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/main_i2c.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_i2c.c
 )

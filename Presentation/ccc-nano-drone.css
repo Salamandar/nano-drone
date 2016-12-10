@@ -1,0 +1,174 @@
+/*@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville|Racing+Sans+One|Satisfy);*/
+
+@font-face {
+  font-family: Cantarell;
+  src: local('Cantarell'), url(Cantarell-Regular.otf) format('opentype');
+}
+
+body {}
+
+
+body {
+    font-size: 150%;
+    text-align: center;
+    font-family: Cantarell;
+}
+
+p {
+    font-size: 125%;
+    font-weight: normal;
+    margin-bottom: 0.3em;
+    margin-top: 0.3em;
+
+    text-align: left;
+    margin-left: 17%;
+    width: 80%;
+    text-indent: -5%;
+}
+
+em {
+    font-size: 105%;
+    font-weight: bold;
+}
+
+strong {
+    font-size: 127%;
+    letter-spacing: -2px;
+}
+
+h1, h2, h3, h4 {
+    font-weight: normal;
+    margin-bottom: 1em;
+    margin-top: 0.3em;
+    box-shadow: 4px 4px 20px #aaa;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+ul {
+    list-style-position: inside;
+}
+
+li {
+  font-weight: normal;
+  margin-bottom: 0.8em;
+  margin-top: 0.3em;
+/*  line-height: 1.8em;*/
+  text-align: left;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  /*list-style-type: circle;*/
+}
+
+pre {
+    text-align: left;
+    width: 30em;
+    margin-left: auto;
+    margin-right: auto;
+
+    border-left: solid 3px black;
+    padding-left: 1%
+}
+
+a {
+    text-decoration: none;
+    color: #444;
+}
+
+img {
+   margin-top:    1em;
+   margin-bottom: 1em;
+}
+
+#ThreeD H1 {
+    font-family: Racing Sans One;
+    font-size: 300%;
+}
+
+#thequestion p {
+    font-family: Racing Sans One;
+}
+
+
+div.green {
+    /* Custom CSS here */
+    background-color:#9FDC2D;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+
+div.orange {
+    /* Custom CSS here */
+    background-color:#DC8D2C;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+
+div.blue {
+    /* Custom CSS here */
+    background-color:#23BADC;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+
+
+
+/* var*/
+.step {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: rgba(255,255,255,0.92);
+}
+
+.step {
+  width: 1200px;
+  min-height: 600px;
+}
+
+
+.impress-enabled .step {
+  margin: 0;
+  opacity: 0.3;
+  -webkit-transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -ms-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  transition: opacity 1s;
+}
+
+.step:not(.active) {
+  transition-delay: 0.1s;
+  opacity: 0.0;
+}
+
+.impress-enabled .step.active {
+  opacity: 1
+}
+
+
+div#step-1 {
+  /*background: url(bg.jpg) no-repeat top left;*/
+  width: 1600px;
+  height: 800px;
+  background: url('images/HowToTrainYourDragon.png') center no-repeat;
+  background-size: auto 800px;
+}
+
+div#step-1 h1 {
+  box-shadow: none;
+  text-shadow: 0px 0px 10px #AEAEAE;
+  font-weight: bold;
+  margin-top: -0.2em;
+}
+
+div#step-2 img {
+  float: right;
+}
