@@ -57,12 +57,37 @@ Goals
 Rev-engineering the electronics
 ===================================
 
+.. raw:: html
+
+    <embed>
+        <video controls preload="auto" height=600 width=auto
+            src="./video.mp4" />
+    </embed>
 
 
 
 
+----
+
+Flashing the software
+==========================
 
 
+----
+
+Debugging
+===========
+
+
+----
+
+Is it legal ?
+==============
+
+----
+
+Conclusion
+============
 
 
 
@@ -119,10 +144,6 @@ More formatting
 ===============
 
 #. Numbered lists are of course also supported.
-
-#. They are automatically numbered.
-
-#. But only for single-level lists and single rows of text.
 
 #. ``inline literals``, rendered as <tt> and usually shown with a monospace font, which is good for source code.
 
