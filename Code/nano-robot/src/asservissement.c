@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define COS45 1.41421356237/2
-
 #define P_ 30
 #define I_ 0
 #define D_ 0
@@ -91,9 +89,10 @@ void asservissement_getMotorSpeed (int *motorFL,
                                    int *motorFR,
                                    int *motorBL,
                                    int *motorBR) {
-    *motorFL = m_throttle + get_PID_output(&PIDyaw) + get_PID_output(&PIDpitch)/diviser + get_PID_output(&PIDroll)/diviser;
-    *motorFR = m_throttle - get_PID_output(&PIDyaw) + get_PID_output(&PIDpitch)/diviser - get_PID_output(&PIDroll)/diviser;
-    *motorBL = m_throttle - get_PID_output(&PIDyaw) - get_PID_output(&PIDpitch)/diviser + get_PID_output(&PIDroll)/diviser;
-    *motorBR = m_throttle + get_PID_output(&PIDyaw) - get_PID_output(&PIDpitch)/diviser - get_PID_output(&PIDroll)/diviser;
+
+    *motorFL = m_throttle == 0 ? 0 : m_throttle + get_PID_output(&PIDyaw) + get_PID_output(&PIDpitch)/diviser;
+    *motorFR = m_throttle == 0 ? 0 : m_throttle - get_PID_output(&PIDyaw) - get_PID_output(&PIDroll )/diviser;
+    *motorBL = m_throttle == 0 ? 0 : m_throttle - get_PID_output(&PIDyaw) + get_PID_output(&PIDroll )/diviser;
+    *motorBR = m_throttle == 0 ? 0 : m_throttle + get_PID_output(&PIDyaw) - get_PID_output(&PIDpitch)/diviser;
 
 }

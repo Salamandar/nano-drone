@@ -8,7 +8,7 @@
 #include "videoTask.h"
 
 #include "asservissement.h"
-#include "filters.h"
+#include "math_utils.h"
 
 #include <math.h>
 
@@ -35,21 +35,19 @@ int main() {
         //         (fast_atan2(accel.x, -accel.z) - 90)*100,
         //         gyro.y, 1, &angleRoll);
 
+        // En degrés
         angleYaw   = - gyro.z/8;
-        anglePitch = (fast_atan2(accel.y/10, -accel.z/10) - 90)*100;
-        angleRoll  = (fast_atan2(accel.x/10, -accel.z/10) - 90)*100;
-
-
+        anglePitch = fast_atan2(accel.a/10, -accel.z/10) - 90;
+        angleRoll  = fast_atan2(accel.b/10, -accel.z/10) - 90;
 
         asservissement_update(angleYaw, anglePitch, angleRoll, 1);
 
         asservissement_getMotorSpeed(&motorFL, &motorFR, &motorBL, &motorBR);
 
         motor_set_speed(Mot_Avant_gauche, motorFL);
-        motor_set_speed(Mot_Avant_droite, motorFR);
-        motor_set_speed(Mot_Arrie_gauche, motorBL);
+        // motor_set_speed(Mot_Avant_droite, motorFR);
+        // motor_set_speed(Mot_Arrie_gauche, motorBL);
         motor_set_speed(Mot_Arrie_droite, motorBR);
-
     }
 
     // init_leds_task();

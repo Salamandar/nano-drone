@@ -83,6 +83,9 @@ void mpu_get_inertial_values() {
     accel.y = __bswap16(data[1]);
     accel.z = __bswap16(data[2]);
 
+    accel.a = COS45 * (float)(accel.x + accel.y);
+    accel.b = COS45 * (float)(accel.x - accel.y);
+
     // We can get multiple registers at once
     i2c_HAL_read_register(I2C_MPU_ADDR,  GYRO_XOUT_H, (uint8_t*)data, 6);
     gyro.x = __bswap16(data[0]);
@@ -96,8 +99,6 @@ void mpu_get_inertial_values() {
 
 // This function should be called until it returns true.
 bool mpu_calibrate() {
-
-
-
+    return true;
 }
 

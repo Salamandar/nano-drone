@@ -2,11 +2,16 @@
 
 #include <stdint.h>
 
+#define COS45 1.41421356237/2
 
 typedef struct __attribute__((packed)) coords {
     int16_t x;
     int16_t y;
     int16_t z;
+
+    // Rotated coords
+    int16_t a;
+    int16_t b;
 } Coords;
 
 // Global variables ? Meeeeeh.

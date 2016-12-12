@@ -37,7 +37,7 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/radioTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/videoTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/asservissement.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/filters.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/math_utils.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pid.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/hardware.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/eeprom.c
@@ -46,7 +46,6 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/mpu.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/radio.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/video.c
-    # ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/i2c_libopencm3.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/main_i2c.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/HAL/stm32f0xx_hal_i2c.c
 )
@@ -56,7 +55,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src
 )
 
-add_definitions("-Os -g")
+add_definitions("-Os -g -Wall")
 
 target_link_libraries(${PROJECT_NAME}
     ${toolchain_libs}
