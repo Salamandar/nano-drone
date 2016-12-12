@@ -67,6 +67,8 @@ void init_radio() {
     SPI_I2SCFGR(SPI1) &= ~SPI_I2SCFGR_I2SMOD;
     spi_enable(SPI1);
 
+    // Dafuk, I need to configure twice ?!
+    nrf_initialize();
     nrf_initialize();
 }
 
@@ -176,47 +178,6 @@ void nrf_initialize() {
     nrf_deselect();
 
     nrf_receive_data(15, 0);
-
-    // Write byte config (Power up, CRC 1B enabled, PRIM_RX)
-    nrf_writeReg(CONFIG,    0b00001111);
-
-
-
-
-    // XN297-specific initialization :
-    // * BB_CAL (baseband)
-    nrf_writeRegLong(BB_CAL,        5, bb_config);
-    // * RF_CAL
-    nrf_writeRegLong(RF_CAL,        7, rf_config);
-    // * DEMOD_CAL
-    nrf_writeRegLong(DEMOD_CAL,     5, dm_config);
-
-    // RX adress P0
-    nrf_writeRegLong(RX_ADDR_P0,    5, rxaddress);
-
-    nrf_command (FLUSH_RX);
-    nrf_command (FLUSH_TX);
-
-    nrf_writeReg(STATUS,    0b01110000); // Clear status flags
-    nrf_writeReg(EN_AA,     0b00000000); // No auto ack
-    nrf_writeReg(SETUP_AW,  0b00000011); // Address size (5 bits)
-    nrf_setChann(                    2); // Initial channel
-    nrf_writeReg(RF_CH,     0b00000010); // Write byte RF_channel
-    nrf_writeReg(EN_RXADDR, 0b00000001); // Pipe 0 only
-    nrf_writeReg(SETUP_RETR,0b00000000); // No retransmissions (redundant ?)
-    // nrf_writeReg(RF_SETUP,  0b00000001); // lna high current on (better performance)
-    nrf_writeReg(RF_SETUP,  0b00000111); // lna high current on (better performance)
-    nrf_writeReg(RX_PW_P0,        0x0F); // Payload size : 15 bytes
-
-
-    // XN297 : ACTIVATE + 0x73
-    nrf_select();
-        nrf_byte(ACTIVATE);
-            nrf_read();
-        nrf_byte(0x73);
-            nrf_read();
-    nrf_deselect();
-
 
     // Write byte config (Power up, CRC 1B enabled, PRIM_RX)
     nrf_writeReg(CONFIG,    0b00001111);

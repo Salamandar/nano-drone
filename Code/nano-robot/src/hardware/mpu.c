@@ -53,9 +53,6 @@ void init_mpu() {
     i2c_enable_analog_filter(I2C1);
     i2c_peripheral_enable   (I2C1);
 
-    init_i2c_HAL();
-    delay_ms(1);
-
     // Gyro soft-reset
     MPU_write_register(PWR_MGMT_1,  0b10000000);
     delay_ms(40);
@@ -70,7 +67,7 @@ void init_mpu() {
     MPU_write_register(CONFIG,      GYRO_LOW_PASS_42Hz);
 
     // Get the MPU identifier for
-    i2c_HAL_read(WHO_AM_I, &MPU_id, 1);
+    i2c_HAL_read_register(I2C_MPU_ADDR, WHO_AM_I, &MPU_id, 1);
 }
 
 // TODO this should be in a regular interrupt !

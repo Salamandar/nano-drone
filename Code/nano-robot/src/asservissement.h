@@ -4,7 +4,7 @@
 
 
 void init_asservissement();
-
+void asservissement_setThrottle(int throttle);
 void asservissement_update    (int angleYaw, int anglePitch, int angleRoll, int dt);
 void asservissement_setConsign(int angleYaw, int anglePitch, int angleRoll, int throttle);
 
