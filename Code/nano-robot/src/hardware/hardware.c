@@ -13,8 +13,8 @@ void init_hardware() {
 
     // 48MHz => 48000000 counts per second.
     systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
-    // Interrupts each millisec
-    systick_set_reload(48000 - 1);
+    // Interrupts each millisec tenth
+    systick_set_reload(SYSTICK_PERIOD - 1);
     // clear counter so it starts right away
     systick_clear();
     systick_counter_enable();
@@ -32,7 +32,6 @@ void init_hardware() {
 }
 
 // Systick management
-
 volatile int systick_count = 0;
 
 void sys_tick_handler() {
@@ -52,6 +51,6 @@ void delay_nop(unsigned int count) {
 }
 
 void delay_ms(unsigned int ms) {
-    int count_max = systick_count + ms;
+    int count_max = systick_count + ms * SYSTICK_FREQ_HZ / 1000;
     while(systick_count < count_max) {}
 }
