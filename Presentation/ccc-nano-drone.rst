@@ -81,6 +81,20 @@ Debugging
 
 ----
 
+Having fun
+==============
+
+.. raw:: html
+
+    <embed>
+        <video controls preload="auto" height=600 width=auto
+            src="./imperial_march.mp4" />
+    </embed>
+
+
+
+----
+
 Is it legal ?
 ==============
 
