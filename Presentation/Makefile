@@ -2,7 +2,7 @@ NAME = ccc-nano-drone
 
 PresentationSubdir = presentation
 
-MediasToLink = video.mp4
+MediasToLink = video.mp4 imperial_march.mp4
 
 
 presentation: $(NAME).rst $(NAME).css
