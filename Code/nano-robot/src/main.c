@@ -7,6 +7,8 @@
 #include "radioTask.h"
 #include "videoTask.h"
 
+#include "music.h"
+
 #include "asservissement.h"
 #include "math_utils.h"
 
@@ -15,11 +17,15 @@
 int angleYaw = 0, anglePitch, angleRoll;
 int motorFL, motorFR, motorBL, motorBR;
 
+
 int main() {
     init_hardware();
     // eeprom_test();
     init_asservissement();
     asservissement_setConsign(0, 0, 0, 00);
+
+    imperial_march();
+
 
     while (1) {
         receive_radio();

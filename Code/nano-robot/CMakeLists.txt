@@ -38,6 +38,7 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/videoTask.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/asservissement.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/math_utils.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/music.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pid.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/hardware.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware/eeprom.c
