@@ -24,11 +24,21 @@ int main() {
     init_asservissement();
     asservissement_setConsign(0, 0, 0, 00);
 
-    imperial_march();
+    // imperial_march();
 
 
     while (1) {
         receive_radio();
+
+        if (radioConfig.photo) {
+            imperial_march();
+            continue;
+        }
+        if (radioConfig.video) {
+            rickroll();
+            continue;
+        }
+
 
         asservissement_setThrottle(radioConfig.gaz);
 

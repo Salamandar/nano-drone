@@ -6,14 +6,14 @@
 // Temps d'une double croche (base de temps)
 #define TEMPO 140
 
+static int tempo = 140;
+static int delay_notes = 10;
+
 void beep(unsigned int note, unsigned int duration) {
-    int i;
-    long delay = (long)(10000/note);  //This is the semiperiod of each note.
-    long time = (long)((duration*100)/(delay*2));  //This is how much time we need to spend on the note.
     motor_set_speed(MOTOR, note/2);
-    delay_ms(duration-40);
+    delay_ms(duration - delay_notes);
     motor_set_speed(MOTOR, 0);
-    delay_ms(40); //Add a little delay to separate the single notes
+    delay_ms(delay_notes); //Add a little delay to separate the single notes
 }
 
 
@@ -52,6 +52,8 @@ enum notes {
 
 void imperial_march() {
     // beep(re2d, 100000);
+
+    delay_notes = 40;
 
     beep(sol1,  TEMPO*4);
     beep(sol1,  TEMPO*4);
@@ -165,4 +167,39 @@ void imperial_march() {
     // beep(cH, 125);
     // beep(a, TEMPO*8);
     //end of the song}
+}
+
+void rickroll() {
+
+    beep(fa1,   TEMPO*2);
+    beep(sol1,  TEMPO*2);
+    beep(la1b,  TEMPO*2);
+    beep(la1b,  TEMPO*2);
+    beep(si1b,  TEMPO*2);
+    beep(sol1b, TEMPO*3);
+    delay_notes = 0;
+    beep(fa1,   TEMPO*1);
+    delay_notes = 10;
+    beep(re1d,  TEMPO*3);
+
+    beep(none,  TEMPO*2);
+
+    beep(fa1+10,   TEMPO*2);
+    beep(fa1,   TEMPO*2);
+    beep(sol1,  TEMPO*2);
+    beep(la1b,  TEMPO*4);
+    beep(none,  TEMPO*2);
+    beep(re1d,  TEMPO*2);
+    delay_notes = 30;
+    beep(re2d,  TEMPO*4);
+    delay_notes = 10;
+    beep(re2d,  TEMPO*2);
+    delay_notes = 0;
+    beep(la1,   TEMPO*4);
+    beep(si1,   TEMPO*2);
+    beep(la1,   TEMPO*2);
+
+
+
+
 }
