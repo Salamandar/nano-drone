@@ -10,6 +10,13 @@ How to train (and reprogram, actually) your Quadcopter !
 ========================================================
 :id: first-slide
 
+
+.. note::
+    Salamandar
+    talk about hardware reverse engineering
+    a bit about hacking
+
+
 ----
 
 
@@ -23,10 +30,13 @@ About me
 
 * Discovered robotics 2½ years ago with STm32 and dsPIC
 
-* First time hacking & retro-engineering
+* First time hacking & reveng
 
 * Very bad quadcopter pilot
 
+
+.. note::
+    i actually discovered reverse engineering on this drone
 
 ----
 
@@ -35,8 +45,7 @@ About me
     :width: 80%
 
 .. note::
-
-    lorem ipsum
+    webcam on sd card
 
 ----
 
@@ -79,6 +88,51 @@ Rev-engineering the electronics
     :align: center
     :width: 100%
 
+.. note::
+    two pcbs, the first one is actually the structure of the drone, the second one
+    handles the video part. one wire communication.
+
+----
+
+Let's find datasheets (1/3)
+============================
+
+* STm32F03 :
+
+    * Cortex M0 @48MHz
+    * I know that thing !
+    * 16kB Flash + 4k SRAM : VERY low-end MCU
+    * No FPU = no float, no sin/cos/tan…
+    * Proprietary code read-out protection : not software rev-eng :(
+
+----
+
+Let's find datasheets (2/3)
+============================
+
+* Invensense MPU-6052C :
+
+    * 3-axis gyroscope and accelerometer
+    * One "Preliminary and confidential" datasheet, not detailled enough
+    * Almost like the MPU-6050, well-known MPU |srarr| good.
+    * I2C communication
+
+----
+
+Let's find datasheets (3/3)
+============================
+
+* Panchip XN-297 :
+
+    * 2.4GHz radio : possible bluetooth !
+    * Clone of Beken BK2425, itself a Nordic nRF24L01+ clone…
+    * …with extra registers : ``DEMOD_CAL, DYNPD, FEATURE, RF_CAL, BB_CAL`` uh ?
+    * SPI communication
+
+
+.. image:: ./images/xn297-datasheet.png
+    :align: center
+    :width: 60%
 
 ----
 
@@ -88,6 +142,12 @@ WTF is that chip ?
 .. image:: ./images/pcb2.jpg
     :align: center
     :width: 70%
+
+.. note::
+    the internet does not know this reference or logo
+    it probably is FPGA as its common for video processing
+    but it's not a problem, I just have to understand the protocol to take pictures and videos
+
 
 ----
 
@@ -102,6 +162,27 @@ Rev-engineering the electronics
     :align: center
     :width: 100%
 
+.. note::
+    took pictures of the two layers of the pcb
+    noted the vias, tracks and chips pinouts
+    used kicad, the open source pcb design software to redesign the pcb
+    the big "plus"
+
+----
+
+Rev-engineering the electronics
+===================================
+
+.. image:: ./images/electronics_photo.jpg
+    :align: center
+    :width: 90%
+
+* SWDI/O (Serial Wire Debug) is accessible
+
+.. note::
+    there is written "b+" for the two battery connectors
+    the whole pcb has errors
+    it's a quite easy pcb
 
 ----
 
@@ -122,6 +203,86 @@ Thanks ST-Link on Nucleo ;)
     :align: center
     :width: 75%
 
+.. note::
+    i posted this image on my french blog so sorry for the french.
+    i just wanted to show you here the ST board I used, it is kinda like the
+    board some people used to hack electronic locks, on the first day here.
+
+
+----
+
+Dumping the firmware for reverse engineering
+=================================================
+
+* Using OpenOCD
+
+.. code:: bash
+
+    $ sudo openocd -f /usr/share/openocd/scripts/board/st_nucleo_f0.cfg &
+    $ telnet localhost 4444
+    > init
+    > flash probe 0
+    Info : device id = 0x10006444
+    device id = 0x10006444
+    Info : flash size = 16kbytes
+    flash size = 16kbytesflash 'stm32f1x' found at 0x08000000
+    flash 'stm32f1x' found at 0x08000000
+    > dump_image drone.bin 0x08000000 0x20000
+    # Empty drone.bin
+    > stm32f1x unlock 0
+    # Now I can write to the flash !
+
+* STm32 = Software read-out protection bits |srarr| no software retro-engineering ! 😞
+
+    * I could have tried some voodoo things but… Meh.
+
+
+----
+
+Developping & Flashing the software
+=======================================
+
+Nothing fantastic :
+
+* Arm-none-eabi toolchain + CMake
+
+* LibOpenCM3 as Hardware Abstraction Layer
+
+* OpenOCD for flashing
+
+
+----
+
+Debugging
+===========
+
+* No UART/serial output, so ideas :
+
+    + Solder directly on the STm32 ``UART TX``
+
+    + Use the LEDs as I/Os
+
+* Remote GDB session : Yay !
+
+    + Watch values
+
+    + No easy value "streaming"
+
+
+----
+
+…
+
+.. image:: ./images/uart_tx.jpg
+    :align: center
+    :width: 50%
+
+
+----
+
+.. image:: ./images/gdb-capture.png
+    :align: center
+    :width: 80%
 
 
 ----
@@ -133,9 +294,10 @@ Reverse-engineering the radio
 
 * SPI communication
 
-* Arduino sniffer : commands *and* radio frames
+* Arduino sniffer :
 
-* Logic Analyzer : SPI synchronization
+    * Commands : Radio channel/CRC/… configuration
+    * Radio frames
 
 .. image:: ./images/radio-1.jpg
     :align: left
@@ -179,7 +341,14 @@ A whole radio frame :
 * Channel configuration :
 
     + Initially (appairing), channel 2
+
     + After remote appairing, channel changes to 27 to confuse hacker
+
+    + Same channels (2 then 27) for every remote & drone
+
+.. image:: ./images/security_duh.png
+    :align: center
+    :height: 180px
 
 * Whole frame
 
@@ -187,58 +356,74 @@ A whole radio frame :
 
     + Toggle bits for actions
 
-
-
-
-----
-
-Developping & Flashing the software
-=======================================
-
-* Nothing fantastic :
-
-    + Arm-none-eabi toolchain + CMake
-
-    + LibOpenCM3 as Hardware Abstraction Layer
-
-    + OpenOCD
-
-* STm32 = Software read-out protection bits |srarr| no software retro-engineering ! 😞
-
+* No drone feedback
 
 
 ----
 
-Debugging
-===========
+Accelerometer + gyroscope (i2c)
+=================================
 
-* No UART/serial output, so ideas :
+* LibOpenCM3 is bugged :
 
-    + Solder directly on the STm32
+    * The STm32 starts and sends an i2c request
 
-    + Use the LEDs as I/Os
+    * The MPU didnt start yet
 
-* Remote GDB session : Yay !
+    * LibOpenCM3 is waiting for an acknowledgement… that never occurs
 
-    + Watch values
+* I used the ST's HAL (ugh…)
 
-    + No easy values "streaming"
+    * Binary size 6KB |srarr| 10KB…
+    * Cleaning : down to 7.4KB
 
-
-----
-
-…
-
-.. image:: ./images/uart_tx.jpg
-    :align: center
-    :width: 50%
+.. note::
+    some part of me wanted to see how bad the HAL is, and another part was just
+    lazy
 
 
 ----
 
-.. image:: ./images/gdb-capture.png
-    :align: center
-    :width: 80%
+Emulated EEPROM
+================
+
+* Needs to save TRIM/settings
+
+* The only possibility is to use a Flash block : 4KB
+
+|srarr| 16KB Flash = 12KB ROM + 4KB data
+
+
+----
+
+What do I get ?
+===============
+
+* No FPU : no floats at all !
+
+    * One float variable : binary size += 2KB
+
+    * Sin/Cos/Tan : binary size >> 16KB
+
+* 1.2ms control loop (most of the time is in SPI/i2c)
+
+* Speed controlled LEDs
+
+----
+
+Let's make it fly… or not.
+==============================
+
+* PID controlled system
+
+    * Without floats : meh.
+
+    * Needs trimming
+
+    * Needs per-motor correction
+
+* Not the easiest/fastest part, and the least interesting
+
 
 ----
 
@@ -253,18 +438,48 @@ Having fun
     </embed>
 
 
-
 ----
 
 Is it legal ?
 ==============
 
+* Hardware is open by default
+
+    * Unless specified, you do what you want
+
+    * Even modifying and re-flashing, it seems
+
+* Software is closed by default
+
+    * Reverse-engineering legally forbidden
+
+
 ----
 
-Conclusion
+What's next ?
+==============
+
+* Finish the PID trimming
+
+* Code base for other quadcopters / other hardwares / other HAL libraries
+
+* Hack my robot vacuum (STm32f3)
+
+* Hack my hexacopter (WTF is that chip ? Pt. 2) ``Chomp ZC-4J01``
+
+
+----
+
+Thank you !
 ============
 
+Hacking is actually often easy
 
+We have to hack the world !
+
+* Blog & more details : ``geekolloc.fr``
+
+* Code, datasheets,… : ``github.com/Salamandar/nano-drone``
 
 
 
