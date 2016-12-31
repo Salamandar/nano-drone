@@ -105,6 +105,12 @@ Let's find datasheets (1/3)
     * No FPU = no float, no sin/cos/tan…
     * Proprietary code read-out protection : not software rev-eng :(
 
+
+.. image:: ./images/stm32.jpg
+    :align: center
+    :width: 20%
+
+
 ----
 
 Let's find datasheets (2/3)
@@ -116,6 +122,11 @@ Let's find datasheets (2/3)
     * One "Preliminary and confidential" datasheet, not detailled enough
     * Almost like the MPU-6050, well-known MPU |srarr| good.
     * I2C communication
+
+.. image:: ./images/mpu.jpg
+    :align: center
+    :width: 20%
+
 
 ----
 
@@ -129,9 +140,13 @@ Let's find datasheets (3/3)
     * …with extra registers : ``DEMOD_CAL, DYNPD, FEATURE, RF_CAL, BB_CAL`` uh ?
     * SPI communication
 
+.. image:: ./images/xn.jpg
+    :align: left
+    :width: 20%
+
 
 .. image:: ./images/xn297-datasheet.png
-    :align: center
+    :align: right
     :width: 60%
 
 ----
@@ -447,11 +462,13 @@ Is it legal ?
 
     * Unless specified, you do what you want
 
-    * Even modifying and re-flashing, it seems
+    * Even modifying or re-flashing, seem legal
 
 * Software is closed by default
 
     * Reverse-engineering legally forbidden
+
+    * Dumping and modify the firmware is illegal
 
 
 ----
@@ -481,63 +498,4 @@ We have to hack the world !
 
 * Code, datasheets,… : ``github.com/Salamandar/nano-drone``
 
-
-
-
-
-
-
-
-
-
-
-
-----
-
-First header
-============
-
-Second header
--------------
-
-Third header
-............
-
-- There is *Emphasis* and **strong emphasis**, rendered as <em> and <strong>.
-
-#. Numbered lists are of course also supported.
-
-#. ``inline literals``, rendered as <tt> and usually shown with a monospace font, which is good for source code.
-
-#. Hyperlinks, like Python_
-
-.. _Python: http://www.python.org
-
-
-.. note::
-
-    And then you indent the text afterwards. You can have a lot of formatting
-    in the presenter notes, like *emphasis* and **strong** emphasis.
-
-    - Even bullet lists!
-
-    - Which can be handy!
-
-    But you can't have any headings.
-
-
-If you want a whole block of preformatted text you can use double colons::
-
-    And then you need to indent the block of text that should be preformatted
-
-You can even have the double colons on a line by themselves:
-
-::
-
-    And this text will now be rendered as preformatted text
-
-.. code:: python
-
-    def day_of_year(month, day):
-        return (month - 1) * 30 + day_of_month
 
