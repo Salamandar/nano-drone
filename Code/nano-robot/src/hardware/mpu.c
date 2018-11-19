@@ -19,7 +19,7 @@ Coords gyro;
 Coords gyro_cal;
 
 
-inline
+static
 void MPU_write_register(uint16_t MemAddress, uint8_t data) {
     i2c_HAL_write_register(I2C_MPU_ADDR, MemAddress, &data, 1);
 }
@@ -98,4 +98,3 @@ void mpu_get_inertial_values() {
 bool mpu_calibrate() {
     return true;
 }
-

@@ -10,7 +10,7 @@ void init_motors(void) {
                                 RCC_APB2ENR_TIM1EN);
 
     // Reset TIM1 peripheral
-    timer_reset   (TIM1);
+    rcc_periph_reset_pulse(TIM1);
     timer_set_mode(TIM1,
                    TIM_CR1_CKD_CK_INT,
                    TIM_CR1_CMS_EDGE,

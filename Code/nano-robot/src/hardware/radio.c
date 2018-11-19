@@ -74,11 +74,11 @@ void init_radio() {
 
 // Generic functions
 
-inline
+static
 void nrf_byte(uint8_t byte) {
     spi_send8(SPI1, byte);
 }
-inline
+static
 uint8_t nrf_read() {
     return spi_read8(SPI1);
 }
